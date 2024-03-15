@@ -1,25 +1,39 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Estoque } from "../../pages/Estoque/Estoque";
+import { Caixa } from "../../pages/Caixa/Caixa";
+import { Fornecedores } from "../../pages/Fornecedores/Fornecedores";
 import {
   HomeOutlined,
   StockOutlined,
-  CreditCardOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  PlusOutlined,
+  ShoppingOutlined,
+  TeamOutlined,
+  UserOutlined,
+  DollarOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button } from "antd";
-import { Routes, Route } from "react-router-dom"; // Importando os componentes do React Router
+import { Routes, Route, Link } from "react-router-dom";
+import ModalAdProdutos from "../layouts/ModalAProdutos/ModalAdProdutos"; // Importe o componente ModalAdProdutos
+
 const { Header, Sider, Content } = Layout;
+const { SubMenu } = Menu;
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar a visibilidade do modal
+
+  // Função para abrir ou fechar o modal
+  const handleModal = () => {
+    setModalVisible(!modalVisible);
+  };
 
   return (
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical">
-          <img src="" alt="" />
-          {/* <h3>Logo</h3> */}
+          <h3>Logo</h3>
         </div>
 
         <Menu
@@ -29,18 +43,29 @@ const App = () => {
           defaultSelectedKeys={["1"]}
         >
           <Menu.Item key="1" icon={<HomeOutlined />}>
-            Início
+            <Link to={"/"}>Início</Link>
           </Menu.Item>
-          <Menu.Item key="2" icon={<StockOutlined />}>
-            Estoque
-          </Menu.Item>
-          <Menu.Item key="3" icon={<CreditCardOutlined />}>
-            Caixa
+          <SubMenu key="2" icon={<StockOutlined />} title="Estoque">
+            <Menu.Item key="2-1" icon={<ShoppingOutlined />}>
+              <Link to={"/estoque/"}>Itens do Estoque</Link>
+            </Menu.Item>
+            <Menu.Item key="2-2" icon={<PlusOutlined />} onClick={handleModal}>
+              Adicionar Produto
+            </Menu.Item>
+          </SubMenu>
+          <SubMenu key="3" icon={<TeamOutlined />} title="Fornecedores">
+            <Menu.Item key="3-1" icon={<UserOutlined />}>
+              <Link to={"/fornecedores"}>Todos os fornecedores</Link>
+            </Menu.Item>
+          </SubMenu>
+
+          <Menu.Item key="3" icon={<DollarOutlined />}>
+            <Link to={"/caixa"}>Caixa</Link>
           </Menu.Item>
         </Menu>
       </Sider>
       <Layout>
-        <Header>
+        <Header style={{ padding: "0" }}>
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -51,17 +76,20 @@ const App = () => {
               height: 60,
               background: "#fff",
             }}
+            className="ButtonMenu"
           />
         </Header>
         <Content style={{ margin: "24px 16px", padding: 24, minHeight: 280 }}>
-          {/* Defina suas rotas aqui */}
           <Routes>
             <Route path="/" element={<div>Home</div>} />
             <Route path="/estoque" element={<Estoque />} />
-            {/* Defina outras rotas conforme necessário */}
+            <Route path="/caixa" element={<Caixa />} />
+            <Route path="/fornecedores" element={<Fornecedores />} />
           </Routes>
         </Content>
       </Layout>
+      {/* Modal para adicionar produto */}
+      <ModalAdProdutos visible={modalVisible} onCancel={handleModal} />
     </Layout>
   );
 };
