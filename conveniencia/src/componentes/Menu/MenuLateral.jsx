@@ -15,16 +15,14 @@ import {
 } from "@ant-design/icons";
 import { Layout, Menu, Button } from "antd";
 import { Routes, Route, Link } from "react-router-dom";
-import ModalAdProdutos from "../layouts/ModalAProdutos/ModalAdProdutos"; // Importe o componente ModalAdProdutos
-
+import ModalAdProdutos from "../layouts/ModalAProdutos/ModalAdProdutos";
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar a visibilidade do modal
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // Função para abrir ou fechar o modal
   const handleModal = () => {
     setModalVisible(!modalVisible);
   };
