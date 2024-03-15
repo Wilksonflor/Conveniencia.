@@ -35,5 +35,18 @@ npm install
 ```
 
 4. Inicie o servidor backend:
+   `npm start`
 
-`npm start`
+5. Inicie o servidor frontend:
+   `npm run dev`
+
+6. Acesse o aplicativo em seu navegador:
+   `http://localhost:5173/`
+
+# Contribuição
+
+Contribuições são bem-vindas! Para sugestões, correções de bugs ou novas funcionalidades, abra uma issue ou envie um pull request.
+
+# Licença
+
+Este projeto está licenciado sob a `Licença MIT.`
