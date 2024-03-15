@@ -1,0 +1,12 @@
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+  font-family: sans-serif;
+}
+
+.containerSearch {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 50px;
+}
