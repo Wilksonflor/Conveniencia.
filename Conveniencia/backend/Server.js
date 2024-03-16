@@ -5,7 +5,11 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const app = express();
 const http = require("http");
+const base = require("./DataBase/Mongo");
 
+app.get("/", (req, res) => {
+  res.send("Servidor está funcionando!");
+});
 
 // Middleware
 app.use(bodyParser.json({ limit: "50mb", extended: true }));

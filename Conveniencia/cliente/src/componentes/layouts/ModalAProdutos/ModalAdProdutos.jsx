@@ -8,12 +8,14 @@ import {
   DatePicker,
   InputNumber,
   message,
+  Row,
+  Col,
 } from "antd";
 
 const ModalAdProdutos = ({ visible, onCancel }) => {
   const [loading, setLoading] = useState(false);
 
-  const handleOk = async (value) => {
+  const handleOk = async () => {
     setLoading(true);
     // Logica para adicionar o produto tem que ser uma função assincrona
     setTimeout(() => {
@@ -42,22 +44,31 @@ const ModalAdProdutos = ({ visible, onCancel }) => {
         </Button>,
       ]}
     >
-      <Form
-        // labelCol={{ span: 4 }}
-        // wrapperCol={{ span: 14 }}
-        style={{ maxWidth: 800 }}
-      >
-        <Form.Item>
-          <Input placeholder="Digite o produto..." />
-        </Form.Item>
-
-        <Form.Item label="R$">
-          <Input placeholder="Digite o preço" />
-        </Form.Item>
-
-        <Form.Item label="Quantidade">
-          <InputNumber />
-        </Form.Item>
+      <Form layout="vertical">
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Produto">
+              <Input placeholder="Digite o produto..." />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Preço (R$)">
+              <Input placeholder="Digite o preço" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Quantidade">
+              <InputNumber />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Data de entrada">
+              <DatePicker style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );
