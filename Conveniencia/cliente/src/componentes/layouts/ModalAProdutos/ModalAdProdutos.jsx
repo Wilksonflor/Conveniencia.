@@ -14,20 +14,50 @@ import {
 
 const ModalAdProdutos = ({ visible, onCancel }) => {
   const [loading, setLoading] = useState(false);
+  const [produto, setProduto] = useState({
+    nomeProduto: "",
+    preco: 0,
+    quantidade: 0,
+    dataEntrada: null,
+  });
+
+  const handleChange = (field, value) => {
+    setProduto((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
   const handleOk = async () => {
     setLoading(true);
-    // Logica para adicionar o produto tem que ser uma função assincrona
-    setTimeout(() => {
-      setLoading(false);
+    const { nomeProduto, preco, quantidade, dataEntrada, codigoProduto } =
+      produto;
+    const precoFormatado = preco.replace(",", ".");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/produtos/novosProdutos",
+        {
+          nomeProduto,
+          precoUnitario: precoFormatado,
+          quantidadeEstoque: quantidade,
+          dataEntrada,
+          codigoProduto,
+        }
+      );
+      console.log("Produto criado com sucesso", response.data);
       message.success("Produto inserido");
       onCancel();
-    }, 2000);
+    } catch (error) {
+      console.log("Erro ao criar produto", error);
+      message.error("Erro ao criar produto");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Modal
-      title="Adicionar Produto"
+      title="Cadastrar Produto"
       open={visible}
       onCancel={onCancel}
       footer={[
@@ -48,24 +78,39 @@ const ModalAdProdutos = ({ visible, onCancel }) => {
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Produto">
-              <Input placeholder="Digite o produto..." />
+              <Input
+                placeholder="Digite o produto..."
+                value={produto.nomeProduto}
+                onChange={(e) => handleChange("nomeProduto", e.target.value)}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Preço (R$)">
-              <Input placeholder="Digite o preço" />
+            <Form.Item label="Preço unitário (R$)">
+              <Input
+                placeholder="Digite o preço"
+                value={produto.preco}
+                onChange={(e) => handleChange("preco", e.target.value)}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Quantidade">
-              <InputNumber />
+              <InputNumber
+                value={produto.quantidade}
+                onChange={(value) => handleChange("quantidade", value)}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Data de entrada">
-              <DatePicker style={{ width: "100%" }} />
+              <DatePicker
+                style={{ width: "100%" }}
+                value={produto.dataEntrada}
+                onChange={(value) => handleChange("dataEntrada", value)}
+              />
             </Form.Item>
           </Col>
         </Row>

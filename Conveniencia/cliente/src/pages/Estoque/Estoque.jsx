@@ -2,46 +2,49 @@ import { Table } from "antd";
 import { useState, useEffect } from "react";
 import FiltrosEstoque from "../../componentes/layouts/Filtros/FiltrosEstoque";
 import styled from "./Estoque.module.css";
+import axios from "axios";
 
 export const Estoque = () => {
   const [columns, setColumns] = useState([
     {
       title: "Código",
-      dataIndex: "id",
+      dataIndex: "codigoProduto",
     },
     {
       title: "Produto",
-      dataIndex: "title",
+      dataIndex: "nomeProduto",
     },
-    {
-      title: "Categoria",
-      dataIndex: "category",
-    },
-
     {
       title: "Em estoque",
-      dataIndex: "stock",
+      dataIndex: "quantidadeEstoque",
     },
-
     {
-      title: "Preço",
-      dataIndex: "price",
-      render: (text) => <span>R$ {text},00</span>,
+      title: "Preço unitário",
+      dataIndex: "precoUnitario",
+      render: (text) => (
+        <span>R$ {parseFloat(text).toFixed(2).replace(".", ",")}</span>
+      ),
     },
   ]);
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((res) => res.json())
-      .then((result) => {
-        setDataSource(result.products);
-      });
+    const fetchProdutos = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/produtos");
+        setDataSource(response.data.produto);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      }
+    };
+
+    fetchProdutos();
   }, []);
 
   const handleSearch = (produtos) => {
     setDataSource(produtos);
   };
+
   return (
     <>
       <h2 className={styled.h2}>Produtos em estoque</h2>
@@ -50,8 +53,10 @@ export const Estoque = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={dataSource}
-        rowKey={(record) => record.id}
+        dataSource={dataSource.map((record, index) => ({
+          ...record,
+          key: `${index}`,
+        }))}
         size="small"
       />
     </>

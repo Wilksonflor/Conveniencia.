@@ -7,6 +7,8 @@ const produtoSchema = new mongoose.Schema({
   },
   codigoProduto: {
     type: Number,
+    unique: true,
+    default: () => Math.floor(1000 + Math.random() * 1999),
     required: true,
   },
   precoUnitario: {
