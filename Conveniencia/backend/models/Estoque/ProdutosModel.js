@@ -19,6 +19,10 @@ const produtoSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  valorTotal: {
+    type: Number,
+    required: true,
+  },
   // Outros campos específicos do produto
 });
 

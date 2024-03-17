@@ -1,11 +1,31 @@
-import { Table } from "antd";
+import { Table, Button, Space } from "antd";
 import { useState, useEffect } from "react";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import FiltrosEstoque from "../../componentes/layouts/Filtros/FiltrosEstoque";
 import styled from "./Estoque.module.css";
 import axios from "axios";
 
 export const Estoque = () => {
-  const [columns, setColumns] = useState([
+  const [dataSource, setDataSource] = useState([]);
+
+  useEffect(() => {
+    const fetchProdutos = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/produtos");
+        setDataSource(response.data.produto);
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      }
+    };
+
+    fetchProdutos();
+  }, []);
+
+  const handleSearch = (produtos) => {
+    setDataSource(produtos);
+  };
+
+  const columns = [
     {
       title: "Código",
       dataIndex: "codigoProduto",
@@ -25,24 +45,40 @@ export const Estoque = () => {
         <span>R$ {parseFloat(text).toFixed(2).replace(".", ",")}</span>
       ),
     },
-  ]);
-  const [dataSource, setDataSource] = useState([]);
+    {
+      title: "Valor total",
+      dataIndex: "valorTotal",
+      render: (text) => (
+        <span>R$ {parseFloat(text).toFixed(2).replace(".", ",")}</span>
+      ),
+    },
+    {
+      title: "Ações",
+      render: (_, record) => (
+        <Space>
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          ></Button>
+          <Button
+            type="danger"
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
+          ></Button>
+        </Space>
+      ),
+    },
+  ];
 
-  useEffect(() => {
-    const fetchProdutos = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/produtos");
-        setDataSource(response.data.produto);
-      } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
-      }
-    };
+  const handleEdit = (record) => {
+    // Implemente a lógica para editar o produto
+    console.log("Editando produto:", record);
+  };
 
-    fetchProdutos();
-  }, []);
-
-  const handleSearch = (produtos) => {
-    setDataSource(produtos);
+  const handleDelete = (record) => {
+    // Implemente a lógica para excluir o produto
+    console.log("Excluindo produto:", record);
   };
 
   return (

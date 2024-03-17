@@ -109,6 +109,8 @@ const ModalAdProdutos = ({ visible, onCancel }) => {
               <DatePicker
                 style={{ width: "100%" }}
                 value={produto.dataEntrada}
+                placeholder="Insira a data"
+                format={"DD-MM-YYYY"}
                 onChange={(value) => handleChange("dataEntrada", value)}
               />
             </Form.Item>

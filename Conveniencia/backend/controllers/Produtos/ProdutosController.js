@@ -5,11 +5,14 @@ exports.cadastrarProduto = async (req, res) => {
     req.body;
 
   try {
+    const valorTotal = quantidadeEstoque * precoUnitario;
+
     const novoProduto = await Produto.create({
       nomeProduto,
       quantidadeEstoque,
       codigoProduto,
       precoUnitario,
+      valorTotal,
     });
     res
       .status(201)
