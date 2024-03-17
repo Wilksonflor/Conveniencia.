@@ -10,3 +10,6 @@ h2 {
   justify-content: start;
   margin-bottom: 50px;
 }
+.customTable {
+  background-color: red;
+}

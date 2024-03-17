@@ -8,11 +8,11 @@ const FiltrosEstoque = ({ onSearch }) => {
 
   // Função para lidar com a pesquisa
   const handleSearch = (value) => {
-    // Aqui você pode fazer uma requisição para buscar os produtos com base no valor inserido no campo de pesquisa
+    // Colocar função para buscar o produto
     fetch(`https://dummyjson.com/products/search?q=${value}`)
       .then((res) => res.json())
       .then((data) => {
-        // Aqui você pode lidar com os dados retornados da API, como definir o estado dos produtos buscados
+        // Aqui eu coloco o que eu desejo fazer com a informação da API
         console.log("Produtos encontrados:", data);
         onSearch(data.products);
       })
