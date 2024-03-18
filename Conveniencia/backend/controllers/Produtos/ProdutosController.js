@@ -32,3 +32,17 @@ exports.getAllProdutos = async (req, res) => {
     res.status(500).json({ msg: "Erro ao resgatar produto", error });
   }
 };
+
+exports.searchOneProduct = async (req, res) => {
+  const { id } = req.params;
+  console.log("chegou do buscar um produto", req.params);
+  try {
+    const produto = await Produto.findOne({ _id: id });
+    if (!produto) {
+      return res.status(400).json({ msg: "Produto não localizado" });
+    }
+    res.status(200).json({ msg: "produto: ", produto });
+  } catch (error) {
+    res.status(500).json({ msg: "Erro ao localizar o produto" });
+  }
+};

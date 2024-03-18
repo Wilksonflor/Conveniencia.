@@ -1,24 +1,27 @@
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import axios from "axios";
 const { Search } = Input;
 
 const FiltrosEstoque = ({ onSearch }) => {
   const [buscar, setBuscar] = useState("");
 
-  // Função para lidar com a pesquisa
-  const handleSearch = (value) => {
-    // Colocar função para buscar o produto
-    fetch(`https://dummyjson.com/products/search?q=${value}`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Aqui eu coloco o que eu desejo fazer com a informação da API
-        console.log("Produtos encontrados:", data);
-        onSearch(data.products);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar produtos:", error);
-      });
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/produtos/search/${buscar}`
+      );
+      console.log("response:", response);
+      if (response.status === 200) {
+        console.log(`Produtos localizados:`, response.data);
+        onSearch(response.data.produtos);
+      } else {
+        console.log("Erro ao buscar produtos: status de resposta inválido");
+      }
+    } catch (error) {
+      console.log("Erro ao buscar produtos:", error.message);
+    }
   };
 
   return (
