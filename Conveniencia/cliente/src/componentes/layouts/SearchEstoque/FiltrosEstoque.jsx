@@ -6,21 +6,27 @@ const { Search } = Input;
 
 const FiltrosEstoque = ({ onSearch }) => {
   const [buscar, setBuscar] = useState("");
+  const [error, setError] = useState(null);
 
   const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/produtos/search/${buscar}`
+        `http://localhost:5000/produtos/${buscar}`
       );
-      console.log("response:", response);
+
       if (response.status === 200) {
+        // Se a busca for bem-sucedida
         console.log(`Produtos localizados:`, response.data);
         onSearch(response.data.produtos);
+        // setBuscar("");
+        setError(null); // Limpa o erro, se houver
       } else {
         console.log("Erro ao buscar produtos: status de resposta inválido");
+        setError("Erro ao buscar produtos: status de resposta inválido");
       }
     } catch (error) {
       console.log("Erro ao buscar produtos:", error.message);
+      setError("Produto não localizado");
     }
   };
 
@@ -34,6 +40,7 @@ const FiltrosEstoque = ({ onSearch }) => {
         onChange={(e) => setBuscar(e.target.value)}
         enterButton={<SearchOutlined />}
       />
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

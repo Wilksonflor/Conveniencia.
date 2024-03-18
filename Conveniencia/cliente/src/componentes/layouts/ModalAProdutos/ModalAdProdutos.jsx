@@ -12,7 +12,7 @@ import {
   Col,
 } from "antd";
 
-const ModalAdProdutos = ({ visible, onCancel }) => {
+const ModalAdProdutos = ({ visible, onCancel, fetchProdutos }) => {
   const [loading, setLoading] = useState(false);
   const [produto, setProduto] = useState({
     nomeProduto: "",
@@ -46,6 +46,7 @@ const ModalAdProdutos = ({ visible, onCancel }) => {
       );
       console.log("Produto criado com sucesso", response.data);
       message.success("Produto inserido");
+      fetchProdutos();
       onCancel();
     } catch (error) {
       console.log("Erro ao criar produto", error);

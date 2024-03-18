@@ -35,14 +35,23 @@ exports.getAllProdutos = async (req, res) => {
 
 exports.searchOneProduct = async (req, res) => {
   const { id } = req.params;
-  console.log("chegou do buscar um produto", req.params);
+  console.log("Chegou para buscar um produto:", id);
   try {
-    const produto = await Produto.findOne({ _id: id });
-    if (!produto) {
-      return res.status(400).json({ msg: "Produto não localizado" });
+    let produto;
+
+    if (!isNaN(id)) {
+      produto = await Produto.findOne({ codigoProduto: id });
+    } else {
+      produto = await Produto.findOne({ nomeProduto: id });
     }
-    res.status(200).json({ msg: "produto: ", produto });
+
+    if (!produto) {
+      return res.status(404).json({ msg: "Produto não encontrado" });
+    }
+
+    res.status(200).json({ msg: "Produto encontrado", produto });
   } catch (error) {
-    res.status(500).json({ msg: "Erro ao localizar o produto" });
+    console.log("Erro ao buscar o produto:", error);
+    res.status(500).json({ msg: "Erro ao buscar o produto" });
   }
 };
