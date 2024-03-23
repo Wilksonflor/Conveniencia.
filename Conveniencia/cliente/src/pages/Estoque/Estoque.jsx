@@ -1,9 +1,9 @@
-import { Table, Button, Space, Menu } from "antd";
+import { Table, Button, Space } from "antd";
 import { useState, useEffect } from "react";
+import { message } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import FiltrosEstoque from "../../componentes/layouts/SearchEstoque/FiltrosEstoque";
 import ModalAdProdutos from "../../componentes/layouts/ModalAProdutos/ModalAdProdutos";
-
 import styled from "./Estoque.module.css";
 import axios from "axios";
 
@@ -11,6 +11,7 @@ export const Estoque = () => {
   const [dataSource, setDataSource] = useState([]);
   const [searchedProducts, setSearchedProducts] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [produtoSelecionado, setProdutoSelecionado] = useState(null);
 
   useEffect(() => {
     const fetchProdutos = async () => {
@@ -31,17 +32,37 @@ export const Estoque = () => {
 
   const handleEdit = async (produtoId) => {
     try {
-      const response = await axios.get(`http://localhost:5000/${produtoId}`);
+      // handleModal();
+      // Busquar o produto pelo ID
+      const response = await axios.get(
+        `http://localhost:5000/produtos/${produtoId}`
+      );
       console.log(response.data);
+      setProdutoSelecionado(response.data);
+      setModalVisible(true);
+      setTimeout(() => {
+        message.success("Produto atualizado com sucesos");
+      }, 3000);
 
-      console.log("Editando produto:", record);
+      // Você pode abrir um modal de edição aqui com os dados do produto
     } catch (error) {
-      console.log("erro ao editar produto", error);
+      console.log("Erro ao editar produto", error);
     }
   };
 
-  const handleDelete = (record) => {
-    console.log("Excluindo produto:", record);
+  const handleDelete = async (produtoId) => {
+    try {
+      // Enviar uma requisição DELETE para excluir o produto
+      await axios.delete(`http://localhost:5000/produtos/${produtoId}`);
+      console.log("Produto excluído com sucesso!");
+      // Atualizar a lista de produtos após excluir o produto
+      const updatedProducts = dataSource.filter(
+        (produto) => produto._id !== produtoId
+      );
+      setDataSource(updatedProducts);
+    } catch (error) {
+      console.log("Erro ao excluir produto", error);
+    }
   };
 
   const handleModal = () => {
@@ -92,12 +113,12 @@ export const Estoque = () => {
           <Button
             type="primary"
             icon={<EditOutlined />}
-            onClick={() => handleEdit(record.codigoProduto)}
+            onClick={() => handleEdit(record._id)}
           ></Button>
           <Button
             type="danger"
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record._id)}
           ></Button>
         </Space>
       ),

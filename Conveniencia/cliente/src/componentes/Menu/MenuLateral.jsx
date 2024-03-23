@@ -16,6 +16,7 @@ import {
 import { Layout, Menu, Button } from "antd";
 import { Routes, Route, Link } from "react-router-dom";
 import ModalAdProdutos from "../layouts/ModalAProdutos/ModalAdProdutos";
+import { Home } from "../../pages/Home/Home";
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -79,7 +80,7 @@ const App = () => {
         </Header>
         <Content style={{ margin: "24px 16px", padding: 24, minHeight: 280 }}>
           <Routes>
-            <Route path="/" element={<div>Home</div>} />
+            <Route path="/" element={<Home />} />
             <Route path="/estoque" element={<Estoque />} />
             <Route path="/caixa" element={<Caixa />} />
             <Route path="/fornecedores" element={<Fornecedores />} />

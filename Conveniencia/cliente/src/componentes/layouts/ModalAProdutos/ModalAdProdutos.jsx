@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Modal,
@@ -12,8 +12,9 @@ import {
   Col,
 } from "antd";
 
-const ModalAdProdutos = ({ visible, onCancel, fetchProdutos }) => {
+const ModalAdProdutos = ({ visible, onCancel }) => {
   const [loading, setLoading] = useState(false);
+
   const [produto, setProduto] = useState({
     nomeProduto: "",
     preco: 0,
@@ -44,9 +45,14 @@ const ModalAdProdutos = ({ visible, onCancel, fetchProdutos }) => {
           codigoProduto,
         }
       );
-      console.log("Produto criado com sucesso", response.data);
       message.success("Produto inserido");
-      fetchProdutos();
+      setProduto({
+        nomeProduto: "",
+        preco: 0,
+        quantidade: 0,
+        dataEntrada: null,
+      });
+
       onCancel();
     } catch (error) {
       console.log("Erro ao criar produto", error);
