@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Modal, Button, Form, Input, Row, Col, Select } from "antd";
-
+import { Modal, Button, Form, Input, Row, Col, Select, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 const ModalVeProdutos = ({ visible, onCancel }) => {
@@ -9,12 +9,14 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
   const [produtoSelecionado, setProdutoSelecionado] = useState("");
   const [precoProduto, setPrecoProduto] = useState("");
   const [produtos, setProdutos] = useState([]);
+  const [nomeCliente, setNomeCliente] = useState("");
+  const [quantidadePedido, setQuantidadePedido] = useState("");
+  const [valorPedido, setValorPedido] = useState("");
 
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
         const response = await axios.get("http://localhost:5000/produtos");
-        console.log("produtos do vender", response);
         setProdutos(response.data.produto);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
@@ -23,6 +25,11 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
 
     fetchProdutos();
   }, []);
+
+  const calcularValorPedido = () => {
+    const valorConvertido = Number(quantidadePedido) * Number(precoProduto);
+    console.log(`Valor convertido: ${valorConvertido}`);
+  };
 
   const handleChange = (value) => {
     setProdutoSelecionado(value);
@@ -41,11 +48,14 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
   const handleOk = async () => {
     setLoading(true);
     // Lógica para adicionar o produto
+    setTimeout(() => {
+      message.success("Pedido realizado com sucesso");
+    }, 200);
   };
 
   return (
     <Modal
-      title="Cadastrar Produto"
+      title="Fazer pedido"
       open={visible}
       onCancel={onCancel}
       footer={[
@@ -58,12 +68,20 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
           loading={loading}
           onClick={handleOk}
         >
-          Adicionar
+          Fazer pedido
         </Button>,
       ]}
     >
       <Form layout="vertical">
         <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Nome do cliente">
+              <Input
+                value={nomeCliente}
+                onChange={(e) => setNomeCliente(e.target.value)}
+              />
+            </Form.Item>
+          </Col>
           <Col span={12}>
             <Form.Item label="Selecione o produto">
               <Select
@@ -85,7 +103,36 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
           </Col>
           <Col span={12}>
             <Form.Item label="Preço unitário (R$)">
-              <Input readOnly value={precoProduto} />
+              <Input disabled value={precoProduto} />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Digite a quantidade">
+              <Input
+                value={quantidadePedido}
+                onChange={(e) => {
+                  setQuantidadePedido(e.target.value);
+                  calcularValorPedido();
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Valor do pedido (R$)">
+              <Input
+                disabled
+                // value={valorPedido}
+                onChange={calcularValorPedido}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item>
+              <Button>
+                <PlusOutlined style={{ color: "green" }} />
+                Adicionar ao pedido
+              </Button>
             </Form.Item>
           </Col>
         </Row>

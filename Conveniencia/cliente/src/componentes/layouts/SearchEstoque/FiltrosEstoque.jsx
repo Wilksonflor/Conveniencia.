@@ -15,11 +15,8 @@ const FiltrosEstoque = ({ onSearch }) => {
       );
 
       if (response.status === 200) {
-        // Se a busca for bem-sucedida
-        console.log(`Produtos localizados:`, response.data);
         onSearch(response.data.produtos);
-        // setBuscar("");
-        setError(null); // Limpa o erro, se houver
+        setError(null); 
       } else {
         console.log("Erro ao buscar produtos: status de resposta inválido");
         setError("Erro ao buscar produtos: status de resposta inválido");

@@ -17,6 +17,7 @@ import { Layout, Menu, Button } from "antd";
 import { Routes, Route, Link } from "react-router-dom";
 import ModalAdProdutos from "../layouts/ModalAProdutos/ModalAdProdutos";
 import { Home } from "../../pages/Home/Home";
+import styles from "./Menu.module.css";
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -32,7 +33,7 @@ const App = () => {
     <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="demo-logo-vertical">
-          <h3>Logo</h3>
+          <h3 className={styles.logo}>Logo</h3>
         </div>
 
         <Menu
@@ -49,7 +50,7 @@ const App = () => {
               <Link to={"/estoque/"}>Itens do Estoque</Link>
             </Menu.Item>
             <Menu.Item key="2-2" icon={<PlusOutlined />} onClick={handleModal}>
-              Adicionar Produto
+              Cadastrar Produto
             </Menu.Item>
           </SubMenu>
           <SubMenu key="3" icon={<TeamOutlined />} title="Fornecedores">
