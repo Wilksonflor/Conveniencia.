@@ -1,10 +1,17 @@
+import { useEffect, useState } from "react";
 import { Row, Col, Menu } from "antd";
 import { ShoppingCartOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import ModalVeProdutos from "../../componentes/layouts/ModalVeProdutos/ModalVeProdutos";
-import { useState } from "react";
+import { TableHome } from "../../componentes/layouts/TableHome/TableHome";
+import axios from "axios";
 
 export const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [pedidos, setPedidos] = useState([]);
+
+  useEffect(() => {
+    fetchPedidos();
+  }, []); //
 
   const handleModalVender = () => {
     setModalVisible(true);
@@ -15,10 +22,18 @@ export const Home = () => {
     setModalVisible(false);
   };
 
+  const fetchPedidos = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/pedidos");
+      setPedidos(response.data.produto);
+    } catch (error) {
+      console.error("Erro ao buscar pedidos:", error);
+    }
+  };
   return (
     <section>
       <Row>
-        <Col xs={32} sm={4} order={2}>
+        <Col xs={32} sm={3} order={2} style={{ marginLeft: 20 }}>
           <Menu>
             <Menu.Item
               key="venderProduto"
@@ -34,21 +49,10 @@ export const Home = () => {
             >
               Entregar Pedido
             </Menu.Item>
-            {/* <Menu.Item>Menu</Menu.Item> */}
-            {/* <Menu.Item>Menu</Menu.Item> */}
-            {/* <Menu.Item>Menu</Menu.Item> */}
-            {/* <Menu.Item>Menu</Menu.Item> */}
-            {/* <Menu.Item>Menu</Menu.Item> */}
-            {/* <Menu.Item>Menu</Menu.Item> */}
           </Menu>
         </Col>
         <Col xs={24} sm={18} order={1}>
-          <div>
-            <p>Conteúdo</p>
-            <p>Conteúdo</p>
-            <p>Conteúdo</p>
-            <p>Conteúdo</p>
-          </div>
+          <TableHome />
         </Col>
       </Row>
       <ModalVeProdutos visible={modalVisible} onCancel={handleCloseModal} />

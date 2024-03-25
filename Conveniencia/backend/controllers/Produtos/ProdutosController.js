@@ -1,7 +1,5 @@
 const Produto = require("../../models/Estoque/ProdutosModel");
 
-
-
 exports.cadastrarProduto = async (req, res) => {
   const { nomeProduto, quantidadeEstoque, codigoProduto, precoUnitario } =
     req.body;

@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Modal, Button, Form, Input, Row, Col, Select, message } from "antd";
+import {
+  Modal,
+  Button,
+  Form,
+  Input,
+  Row,
+  Col,
+  Select,
+  message,
+  Spin,
+} from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 const { Option } = Select;
@@ -30,7 +40,7 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
   const calcularValorPedido = () => {
     if (precoProduto && !isNaN(quantidadePedido)) {
       const precoNumerico = parseFloat(
-        precoProduto.replace("R$", "").replace(",", ".")
+        precoProduto.replace(/[^\d.,]/g, "").replace(",", ".")
       );
       const quantidadeNumerica = parseFloat(quantidadePedido);
       const valorPedidoCalculado = precoNumerico * quantidadeNumerica;
@@ -38,25 +48,6 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
     } else {
       setValorPedido("");
     }
-  };
-
-  const gerarNumeroPedido = () => {
-    // // Verificar se já existe um contador no localStorage
-    // let contadorPedido = localStorage.getItem("contadorPedido");
-    // // Se não houver contador, iniciar em 1
-    // if (!contadorPedido) {
-    //   contadorPedido = 1;
-    // } else {
-    //   // Incrementar o contador
-    //   contadorPedido = parseInt(contadorPedido) + 1;
-    // }
-    // // Garantir que o contador esteja no formato de 3 dígitos, preenchido com zeros à esquerda
-    // const numeroPedido = `pedido - ${contadorPedido
-    //   .toString()
-    //   .padStart(3, "0")}`;
-    // // Salvar o contador atualizado no localStorage
-    // localStorage.setItem("contadorPedido", contadorPedido);
-    // return numeroPedido;
   };
 
   const handleChange = (value) => {
@@ -75,18 +66,35 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
 
   const adicionarAoPedido = () => {
     console.log("Adicionar ao pedido clicado");
-    const numeroPedido = gerarNumeroPedido();
-    console.log(numeroPedido);
-    const pedidoInfo = getPedidoInfo(numeroPedido);
-    console.log(pedidoInfo);
   };
 
   const handleOk = async () => {
     setLoading(true);
-    // Lógica para fazer o pedido
-    setTimeout(() => {
-      message.success("Pedido realizado com sucesso");
-    }, 200);
+    try {
+      const response = await axios.post("http://localhost:5000/novoPedido", {
+        produto: produtoSelecionado,
+        dataPedido: new Date().toISOString(),
+        quantidade: quantidadePedido,
+        nomeCliente: nomeCliente,
+        valorPedido: parseFloat(valorPedido),
+      });
+      console.log("resposta", response);
+      if (response.status === 201) {
+        setNomeCliente("");
+        setProdutoSelecionado("");
+        setQuantidadePedido("");
+        setValorPedido("");
+        message.success("Pedido realizado com sucesso");
+        onCancel();
+      } else {
+        message.error("Erro ao realizar o pedido");
+      }
+    } catch (error) {
+      console.log("erro ao cadastrar", error);
+      message.error("Erro ao realizar o pedido");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getPedidoInfo = (numeroPedido) => {
@@ -170,19 +178,25 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
           </Col>
           <Col span={14}>
             <Form.Item>
-              <Button onClick={adicionarAoPedido}>
+              <Button
+                onClick={adicionarAoPedido}
+                disabled={
+                  !nomeCliente || !produtoSelecionado || !quantidadePedido
+                }
+              >
                 <PlusOutlined style={{ color: "green" }} />
                 Adicionar ao pedido
               </Button>
             </Form.Item>
           </Col>
         </Row>
-        <TextArea
-          readOnly
-          value={getPedidoInfo(gerarNumeroPedido())}
-          style={{ height: "224px" }}
-        />
-        {/* Coloque o restante do seu formulário aqui */}
+        <Spin spinning={loading}>
+          <TextArea
+            readOnly
+            value={getPedidoInfo()}
+            style={{ height: "224px" }}
+          />
+        </Spin>
       </Form>
     </Modal>
   );

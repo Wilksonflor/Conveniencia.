@@ -58,7 +58,7 @@ const App = () => {
           </Menu.Item>
           <SubMenu key="2" icon={<StockOutlined />} title="Estoque">
             <Menu.Item key="2-1" icon={<ShoppingOutlined />}>
-              <Link to={"/estoque/"}>Itens do Estoque</Link>
+              <Link to={"/estoque"}>Itens do Estoque</Link>
             </Menu.Item>
             <Menu.Item key="2-2" icon={<PlusOutlined />} onClick={handleModal}>
               Cadastrar Produto

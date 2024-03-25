@@ -9,6 +9,7 @@ const base = require("./DataBase/Mongo");
 
 // Importação de rotas
 const ProdutosRouter = require("./rotas/ProdutosRoutes");
+const PedidosRouter = require("./rotas/PedidosRoutes");
 
 app.get("/", (req, res) => {
   res.send("Servidor está funcionando!");
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use(ProdutosRouter);
+app.use(PedidosRouter);
 
 const server = http.createServer(app);
 const port = 5000;
