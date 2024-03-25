@@ -29,6 +29,14 @@ export const Estoque = () => {
   const handleSearch = async (produtos) => {
     setSearchedProducts(produtos);
   };
+  const handleAddSuccess = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/produtos");
+      setDataSource(response.data.produto);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
+  };
 
   const handleEdit = async (produtoId) => {
     try {
@@ -43,8 +51,6 @@ export const Estoque = () => {
       setTimeout(() => {
         message.success("Produto atualizado com sucesos");
       }, 3000);
-
-      // Você pode abrir um modal de edição aqui com os dados do produto
     } catch (error) {
       console.log("Erro ao editar produto", error);
     }
@@ -150,7 +156,11 @@ export const Estoque = () => {
         }
         size="small"
       />
-      <ModalAdProdutos visible={modalVisible} onCancel={handleCloseModal} />
+      <ModalAdProdutos
+        visible={modalVisible}
+        onCancel={handleCloseModal}
+        onSuccess={handleAddSuccess}
+      />
     </>
   );
 };

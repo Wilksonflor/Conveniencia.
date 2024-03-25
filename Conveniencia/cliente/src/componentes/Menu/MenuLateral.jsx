@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Estoque } from "../../pages/Estoque/Estoque";
 import { Caixa } from "../../pages/Caixa/Caixa";
 import { Fornecedores } from "../../pages/Fornecedores/Fornecedores";
+import axios from "axios";
 import {
   HomeOutlined,
   StockOutlined,
@@ -24,9 +25,19 @@ const { SubMenu } = Menu;
 const App = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [dataSource, setDataSource] = useState([]);
 
   const handleModal = () => {
     setModalVisible(!modalVisible);
+  };
+
+  const handleAddSuccess = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/produtos");
+      setDataSource(response.data.produto);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
   };
 
   return (
@@ -89,7 +100,11 @@ const App = () => {
         </Content>
       </Layout>
       {/* Modal para adicionar produto */}
-      <ModalAdProdutos visible={modalVisible} onCancel={handleModal} />
+      <ModalAdProdutos
+        visible={modalVisible}
+        onCancel={handleModal}
+        onSuccess={handleAddSuccess}
+      />
     </Layout>
   );
 };
