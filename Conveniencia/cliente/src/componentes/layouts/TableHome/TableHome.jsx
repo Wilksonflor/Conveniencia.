@@ -11,10 +11,13 @@ export const TableHome = () => {
     const fetchPedidos = async () => {
       try {
         const response = await axios.get("http://localhost:5000/pedidos");
-        console.log("Pedidos: ", response.data);
-        setPedidos(response.data);
+        setPedidos(
+          response.data.filter(
+            (pedido) => pedido.numeroPedido && pedido.nomeCliente
+          )
+        );
       } catch (error) {
-        console.log("erro ao realizar os pedidos", error);
+        console.error("Erro ao buscar pedidos:", error);
       } finally {
         setLoading(false);
       }
@@ -43,13 +46,23 @@ export const TableHome = () => {
     },
     {
       title: "Itens do Pedido",
-      dataIndex: "produto",
-      key: "produto",
-      render: (produto, pedido) => {
-        const itemPedido = `- ${produto} - ${pedido.quantidade} Unidades`;
-        return itemPedido;
-      },
+      dataIndex: "itensPedido",
+      key: "itensPedido",
+      render: (itens) => (
+        <>
+          {itens &&
+            itens.length > 0 &&
+            itens.map((item, index) => (
+              <div key={index}>
+                <div>
+                  {item.produto} - {item.quantidade} Unidades
+                </div>
+              </div>
+            ))}
+        </>
+      ),
     },
+
     {
       title: "Data do pedido",
       dataIndex: "dataPedido",
@@ -61,10 +74,8 @@ export const TableHome = () => {
   ];
 
   return (
-    <>
-      <Spin spinning={loading}>
-        <Table dataSource={pedidos} columns={columns}></Table>
-      </Spin>
-    </>
+    <Spin spinning={loading}>
+      <Table dataSource={pedidos} columns={columns} />
+    </Spin>
   );
 };

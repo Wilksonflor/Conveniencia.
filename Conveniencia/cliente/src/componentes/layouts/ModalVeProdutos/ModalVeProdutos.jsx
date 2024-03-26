@@ -20,6 +20,7 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
   const [produtoSelecionado, setProdutoSelecionado] = useState("");
   const [precoProduto, setPrecoProduto] = useState("");
   const [produtos, setProdutos] = useState([]);
+  const [itensPedido, setItensPedido] = useState([]);
   const [nomeCliente, setNomeCliente] = useState("");
   const [quantidadePedido, setQuantidadePedido] = useState("");
   const [valorPedido, setValorPedido] = useState("");
@@ -65,42 +66,84 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
   };
 
   const adicionarAoPedido = () => {
-    console.log("Adicionar ao pedido clicado");
+    if (produtoSelecionado && quantidadePedido) {
+      const novoItemPedido = {
+        produto: produtoSelecionado,
+        quantidade: quantidadePedido,
+        precoUnitario: precoProduto,
+        valorTotal: valorPedido,
+      };
+      setItensPedido([...itensPedido, novoItemPedido]);
+      // Limpar os campos após adicionar o item ao pedido
+      setProdutoSelecionado("");
+      setQuantidadePedido("");
+      setValorPedido("");
+    } else {
+      message.error("Selecione um produto e insira a quantidade.");
+    }
   };
 
   const handleOk = async () => {
+    if (!nomeCliente || itensPedido.length === 0) {
+      message.error(
+        "Preencha o nome do cliente e adicione pelo menos um item ao pedido."
+      );
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/novoPedido", {
-        produto: produtoSelecionado,
-        dataPedido: new Date().toISOString(),
-        quantidade: quantidadePedido,
-        nomeCliente: nomeCliente,
-        valorPedido: parseFloat(valorPedido),
-      });
-      console.log("resposta", response);
+      const dataPedido = new Date();
+      const valorPedido = itensPedido
+        .reduce((total, item) => total + parseFloat(item.valorTotal), 0)
+        .toFixed(2);
+      const pedidoData = {
+        produto: itensPedido.map((item) => item.produto),
+        dataPedido,
+        quantidade: itensPedido.map((item) => item.quantidade),
+        nomeCliente,
+        valorPedido,
+      };
+      const response = await axios.post(
+        "http://localhost:5000/novoPedido",
+        pedidoData
+      );
       if (response.status === 201) {
         setNomeCliente("");
-        setProdutoSelecionado("");
-        setQuantidadePedido("");
-        setValorPedido("");
+        setItensPedido([]);
         message.success("Pedido realizado com sucesso");
         onCancel();
       } else {
         message.error("Erro ao realizar o pedido");
       }
     } catch (error) {
-      console.log("erro ao cadastrar", error);
+      console.error("Erro ao cadastrar pedido:", error);
       message.error("Erro ao realizar o pedido");
     } finally {
       setLoading(false);
     }
   };
 
-  const getPedidoInfo = (numeroPedido) => {
+  const getPedidoInfo = () => {
     const dataHoraPedido = new Date().toLocaleString();
-    const produtosInfo = `${produtoSelecionado} - (Quantidade: ${quantidadePedido})`;
-    const pedidoInfo = `Número do pedido ${numeroPedido}\nNome do cliente: ${nomeCliente}\nData e hora do pedido: ${dataHoraPedido}\nNome dos itens: ${produtosInfo}\nValor total do pedido: R$ ${valorPedido}`;
+    let pedidoInfo = `Nome do cliente: ${nomeCliente}\nData e hora do pedido: ${dataHoraPedido}\n\n`;
+
+    // Gerar informações para cada item do pedido
+    itensPedido.forEach((item, index) => {
+      pedidoInfo += `Item ${index + 1}:\n`;
+      pedidoInfo += `Produto: ${item.produto}\n`;
+      pedidoInfo += `Quantidade: ${item.quantidade}\n`;
+      pedidoInfo += `Preço unitário: ${item.precoUnitario}\n`;
+      pedidoInfo += `Valor total: ${item.valorTotal}\n\n`;
+    });
+
+    // Adicionar o valor total do pedido
+    const valorTotalPedido = itensPedido.reduce(
+      (total, item) => total + parseFloat(item.valorTotal),
+      0
+    );
+    pedidoInfo += `Valor total do pedido: R$ ${valorTotalPedido.toFixed(2)}`;
+
     return pedidoInfo;
   };
 

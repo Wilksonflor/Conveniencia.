@@ -17,7 +17,7 @@ exports.cadastrarProduto = async (req, res) => {
     res
       .status(201)
       .json({ msg: "Produto criado com sucesso", produto: novoProduto });
-    console.log(`produto criado R${novoProduto}`);
+    console.log(`produto criado ${novoProduto}`);
   } catch (error) {
     console.log("erro ao cadastrar produto", error);
     res.status(500).json({ msg: "Erro ao criar produto", error });

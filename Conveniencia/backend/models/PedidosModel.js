@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const pedidoSchema = new mongoose.Schema({
   produto: {
     type: String,
-    require: true,
+    required: true,
   },
   dataPedido: {
     type: Date,
@@ -11,22 +11,25 @@ const pedidoSchema = new mongoose.Schema({
   },
   nomeCliente: {
     type: String,
-    require: true,
+    required: true,
   },
   numeroPedido: {
     type: Number,
-    require: true,
+    required: true,
+    unique: true,
   },
   valorPedido: {
     type: Number,
-    require: true,
+    required: true,
   },
   quantidade: {
     type: Number,
-    require: true,
+    required: true,
   },
-
-  // Outros campos específicos do pedido, se houver
+  proximoNumeroPedido: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const Pedido = mongoose.model("Pedido", pedidoSchema);
