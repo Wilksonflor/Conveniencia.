@@ -1,7 +1,11 @@
 // Home.js
 import { useState } from "react";
 import { Row, Col, Menu } from "antd";
-import { ShoppingCartOutlined, CheckCircleOutlined } from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import ModalVeProdutos from "../../componentes/layouts/ModalVeProdutos/ModalVeProdutos";
 import { TableHome } from "../../componentes/layouts/TableHome/TableHome";
 
@@ -34,6 +38,12 @@ export const Home = () => {
               icon={<CheckCircleOutlined style={{ color: "blue" }} />}
             >
               Entregar Pedido
+            </Menu.Item>
+            <Menu.Item
+              key="cancelarPedido"
+              icon={<CloseCircleOutlined style={{ color: "red" }} />}
+            >
+              Cancelar Pedido
             </Menu.Item>
           </Menu>
         </Col>

@@ -48,7 +48,6 @@ exports.listarPedidos = async (req, res) => {
   }
 };
 
-
 exports.listarPedidoPorId = async (req, res) => {
   const { id } = req.params;
 

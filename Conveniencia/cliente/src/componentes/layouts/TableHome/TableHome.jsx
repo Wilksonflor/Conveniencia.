@@ -51,11 +51,10 @@ export const TableHome = () => {
       render: (itens) => (
         <>
           {itens &&
-            itens.length > 0 &&
             itens.map((item, index) => (
               <div key={index}>
                 <div>
-                  {item.produto} - {item.quantidade} Unidades
+                  {item.nome} - {item.quantidade} Unidades
                 </div>
               </div>
             ))}

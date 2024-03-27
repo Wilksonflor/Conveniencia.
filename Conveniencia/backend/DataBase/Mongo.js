@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
+
+const { DB_USER, DB_PASSWORD, DB_URL } = process.env;
+const MONGODB_URI = `mongodb+srv://${DB_USER}:${DB_PASSWORD}@${DB_URL}`;
 
 mongoose
-  .connect(`mongodb://127.0.0.1:27017/conveniencia`)
+  .connect(MONGODB_URI)
   .then(() => {
     console.log("Conectado ao MongoDB");
   })
