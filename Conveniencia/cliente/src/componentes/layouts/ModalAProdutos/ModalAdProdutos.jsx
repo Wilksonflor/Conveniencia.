@@ -12,21 +12,16 @@ import {
   Col,
 } from "antd";
 
-const ModalAdProdutos = ({ visible, onCancel, onSuccess, produtoSelecionado }) => {
+const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
   const [loading, setLoading] = useState(false);
-
+  const [editar, setEditar] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [produto, setProduto] = useState({
     nomeProduto: "",
     preco: 0,
     quantidade: 0,
     dataEntrada: null,
   });
-
-  useEffect(() => {
-    if (produtoSelecionado) {
-      setProduto(produtoSelecionado);
-    }
-  }, [produtoSelecionado]);
 
   const handleChange = (field, value) => {
     setProduto((prevState) => ({
@@ -37,7 +32,8 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess, produtoSelecionado }) =
 
   const handleOk = async () => {
     setLoading(true);
-    const { nomeProduto, preco, quantidade, dataEntrada, codigoProduto } = produto;
+    const { nomeProduto, preco, quantidade, dataEntrada, codigoProduto } =
+      produto;
     const precoFormatado = preco.replace(",", ".");
     try {
       const response = await axios.post(
@@ -57,7 +53,7 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess, produtoSelecionado }) =
         quantidade: 0,
         dataEntrada: null,
       });
-      
+
       if (onSuccess) {
         onSuccess();
       }
@@ -70,6 +66,19 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess, produtoSelecionado }) =
     }
   };
 
+  const editarProdutos = async (produtoId) => {
+    try{
+
+    }catch(error){
+      console.log()
+    }
+    const response = axios.get(`http://localhost:5000/${produtoId}`);
+    const produtoParaEditar = response.data.produto;
+
+    setProduto(produtoParaEditar);
+    setEditar(true);
+    setModalVisible(true);
+  };
   return (
     <Modal
       title="Entrada de estoque"

@@ -73,7 +73,29 @@ exports.updateEstoque = async (req, res) => {
     if (!produto) {
       return res.status(400).json({ msg: "Produto não localizado" });
     }
-    console.log("produto atualizado", produto);
+    res.status(200).json({ msg: "Produto atualizado com sucesso!" });
+  } catch (error) {
+    res.status(500).json({ msg: "Erro ao atualizar produto" });
+  }
+};
+
+exports.deleteProduto = async (req, res) => {
+  const { id } = req.params;
+  const { nomeProduto, quantidadeEstoque, codigoProduto, precoUnitario } =
+    req.body;
+  console.log("chegou do delete", req.body);
+
+  try {
+    const produto = await Produto.findByIdAndDelete(
+      id,
+      { nomeProduto, quantidadeEstoque, codigoProduto, precoUnitario },
+      { new: true }
+    );
+
+    if (!produto) {
+      return res.status(400).json({ msg: "Produto não localizado" });
+    }
+    console.log("produto Excluído", produto);
     res.status(200).json({ msg: "Produto atualizado com sucesso!" });
   } catch (error) {
     res.status(500).json({ msg: "Erro ao atualizar produto" });

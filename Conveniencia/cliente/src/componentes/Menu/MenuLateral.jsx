@@ -22,7 +22,7 @@ import styles from "./Menu.module.css";
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-const App = () => {
+const App = ({ handleAddSuccess }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [dataSource, setDataSource] = useState([]);
@@ -30,15 +30,7 @@ const App = () => {
   const handleModal = () => {
     setModalVisible(!modalVisible);
   };
-
-  const handleAddSuccess = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/produtos");
-      setDataSource(response.data.produto);
-    } catch (error) {
-      console.error("Erro ao buscar produtos:", error);
-    }
-  };
+  
 
   return (
     <Layout>

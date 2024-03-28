@@ -1,11 +1,10 @@
-import { Table, Button, Space } from "antd";
-import { useState, useEffect } from "react";
-import { message } from "antd";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Table, Button, Space, message, Modal } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import FiltrosEstoque from "../../componentes/layouts/SearchEstoque/FiltrosEstoque";
 import ModalAdProdutos from "../../componentes/layouts/ModalAProdutos/ModalAdProdutos";
 import styled from "./Estoque.module.css";
-import axios from "axios";
 
 export const Estoque = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -41,28 +40,43 @@ export const Estoque = () => {
 
   const handleEdit = async (produtoId) => {
     try {
-      const response = await axios.put(`http://localhost:5000/produtos/${produtoId}`);
+      const response = await axios.put(
+        `http://localhost:5000/produtos/${produtoId}`
+      );
+      console.log("produto", produtoId);
       setProdutoSelecionado(response.data.produto);
       setModalVisible(true);
     } catch (error) {
       console.log("Erro ao editar produto", error);
     }
   };
-  
 
   const handleDelete = async (produtoId) => {
-    try {
-      // Enviar uma requisição DELETE para excluir o produto
-      await axios.delete(`http://localhost:5000/produtos/${produtoId}`);
-      console.log("Produto excluído com sucesso!");
-      // Atualizar a lista de produtos após excluir o produto
-      const updatedProducts = dataSource.filter(
-        (produto) => produto._id !== produtoId
-      );
-      setDataSource(updatedProducts);
-    } catch (error) {
-      console.log("Erro ao excluir produto", error);
-    }
+    Modal.confirm({
+      title: "Confirmação",
+      content: "Tem certeza que deseja excluir este produto?",
+      okText: "Sim",
+      cancelText: "Cancelar",
+
+      onOk: async () => {
+        try {
+          await axios.delete(`http://localhost:5000/produtos/${produtoId}`);
+          message.success("Produto excluído com sucesso!");
+
+          const updatedProducts = dataSource.filter(
+            (produto) => produto._id !== produtoId
+          );
+          setDataSource(updatedProducts);
+        } catch (error) {
+          console.log("Erro ao excluir produto", error);
+          message.error("Erro ao excluir produto");
+        }
+      },
+    });
+  };
+
+  const handleOkModal = () => {
+    console.log("");
   };
 
   const handleModal = () => {
@@ -72,6 +86,15 @@ export const Estoque = () => {
 
   const handleCloseModal = () => {
     setModalVisible(false);
+  };
+
+  const handleEditSuccess = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/produtos");
+      setDataSource(response.data.produto);
+    } catch (error) {
+      console.error("Erro ao buscar produtos:", error);
+    }
   };
 
   const columns = [
@@ -156,6 +179,8 @@ export const Estoque = () => {
         onCancel={handleCloseModal}
         onSuccess={handleAddSuccess}
         produtoSelecionado={produtoSelecionado}
+        onEditSuccess={handleEditSuccess}
+        onOk={handleOkModal}
       />
     </>
   );
