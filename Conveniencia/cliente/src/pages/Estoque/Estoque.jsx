@@ -40,8 +40,7 @@ export const Estoque = () => {
 
   const handleEdit = async (produtoId) => {
     try {
-      // handleModal();
-      // Busquar o produto pelo ID
+      
       const response = await axios.get(
         `http://localhost:5000/produtos/${produtoId}`
       );

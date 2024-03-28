@@ -25,6 +25,7 @@ export const TableHome = () => {
     fetchPedidos();
   }, []);
 
+  
   const columns = [
     {
       title: "Nome do Cliente",
@@ -46,22 +47,21 @@ export const TableHome = () => {
     },
     {
       title: "Itens do Pedido",
-      dataIndex: "itensPedido",
-      key: "itensPedido",
-      render: (itens) => (
+      dataIndex: "produtos",
+      key: "produtos",
+      render: (itens, index) => (
         <>
           {itens &&
-            itens.map((item, index) => (
-              <div key={index}>
-                <div>
+            itens.map((item, itemIndex) => (
+              <ul key={`${item.quantidade}-${itemIndex}`}>
+                <li>
                   {item.nome} - {item.quantidade} Unidades
-                </div>
-              </div>
+                </li>
+              </ul>
             ))}
         </>
       ),
     },
-
     {
       title: "Data do pedido",
       dataIndex: "dataPedido",
@@ -74,7 +74,7 @@ export const TableHome = () => {
 
   return (
     <Spin spinning={loading}>
-      <Table dataSource={pedidos} columns={columns} />
+      <Table dataSource={pedidos} columns={columns} rowKey="numeroPedido" />
     </Spin>
   );
 };

@@ -1,4 +1,3 @@
-// Home.js
 import { useState } from "react";
 import { Row, Col, Menu } from "antd";
 import {
@@ -11,6 +10,7 @@ import { TableHome } from "../../componentes/layouts/TableHome/TableHome";
 
 export const Home = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [listaPedidos, setListaPedidos] = useState([]);
 
   const handleModalVender = () => {
     setModalVisible(true);
@@ -18,6 +18,15 @@ export const Home = () => {
 
   const handleCloseModal = () => {
     setModalVisible(false);
+  };
+
+  const handlePedidoSuccess = async () => {
+    try {
+      const response = axios.get("http://localhost:5000/pedidos");
+      setListaPedidos(response.data);
+    } catch (error) {
+      console.log("Erro ao listar os pedidos", error);
+    }
   };
 
   return (
