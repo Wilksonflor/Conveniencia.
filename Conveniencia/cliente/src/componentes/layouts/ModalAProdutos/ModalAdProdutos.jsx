@@ -12,7 +12,7 @@ import {
   Col,
 } from "antd";
 
-const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
+const ModalAdProdutos = ({ visible, onCancel, onSuccess, produtoSelecionado }) => {
   const [loading, setLoading] = useState(false);
 
   const [produto, setProduto] = useState({
@@ -21,6 +21,12 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
     quantidade: 0,
     dataEntrada: null,
   });
+
+  useEffect(() => {
+    if (produtoSelecionado) {
+      setProduto(produtoSelecionado);
+    }
+  }, [produtoSelecionado]);
 
   const handleChange = (field, value) => {
     setProduto((prevState) => ({
@@ -31,8 +37,7 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
 
   const handleOk = async () => {
     setLoading(true);
-    const { nomeProduto, preco, quantidade, dataEntrada, codigoProduto } =
-      produto;
+    const { nomeProduto, preco, quantidade, dataEntrada, codigoProduto } = produto;
     const precoFormatado = preco.replace(",", ".");
     try {
       const response = await axios.post(
@@ -52,6 +57,7 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
         quantidade: 0,
         dataEntrada: null,
       });
+      
       if (onSuccess) {
         onSuccess();
       }
@@ -66,7 +72,7 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
 
   return (
     <Modal
-      title="Cadastrar Produto"
+      title="Entrada de estoque"
       open={visible}
       onCancel={onCancel}
       footer={[
@@ -79,7 +85,7 @@ const ModalAdProdutos = ({ visible, onCancel, onSuccess }) => {
           loading={loading}
           onClick={handleOk}
         >
-          Adicionar
+          Salvar
         </Button>,
       ]}
     >

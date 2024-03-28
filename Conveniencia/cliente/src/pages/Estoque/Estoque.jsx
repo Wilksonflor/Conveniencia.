@@ -29,6 +29,7 @@ export const Estoque = () => {
   const handleSearch = async (produtos) => {
     setSearchedProducts(produtos);
   };
+
   const handleAddSuccess = async () => {
     try {
       const response = await axios.get("http://localhost:5000/produtos");
@@ -40,20 +41,14 @@ export const Estoque = () => {
 
   const handleEdit = async (produtoId) => {
     try {
-      
-      const response = await axios.get(
-        `http://localhost:5000/produtos/${produtoId}`
-      );
-      console.log(response.data);
-      setProdutoSelecionado(response.data);
+      const response = await axios.put(`http://localhost:5000/produtos/${produtoId}`);
+      setProdutoSelecionado(response.data.produto);
       setModalVisible(true);
-      setTimeout(() => {
-        message.success("Produto atualizado com sucesos");
-      }, 3000);
     } catch (error) {
       console.log("Erro ao editar produto", error);
     }
   };
+  
 
   const handleDelete = async (produtoId) => {
     try {
@@ -72,6 +67,7 @@ export const Estoque = () => {
 
   const handleModal = () => {
     setModalVisible(true);
+    setProdutoSelecionado(null);
   };
 
   const handleCloseModal = () => {
@@ -159,6 +155,7 @@ export const Estoque = () => {
         visible={modalVisible}
         onCancel={handleCloseModal}
         onSuccess={handleAddSuccess}
+        produtoSelecionado={produtoSelecionado}
       />
     </>
   );

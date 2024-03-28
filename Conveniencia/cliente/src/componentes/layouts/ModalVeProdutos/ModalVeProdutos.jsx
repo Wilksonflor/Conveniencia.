@@ -38,6 +38,15 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
     fetchProdutos();
   }, []);
 
+  const limparInputs = () => {
+    setProdutoSelecionado("");
+    setPrecoProduto("");
+    setItensPedido([]);
+    setNomeCliente("");
+    setQuantidadePedido("");
+    setValorPedido("");
+  };
+
   const calcularValorPedido = () => {
     if (precoProduto && !isNaN(quantidadePedido)) {
       const precoNumerico = parseFloat(
@@ -74,7 +83,6 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
         valorTotal: valorPedido,
       };
       setItensPedido([...itensPedido, novoItemPedido]);
-      // Limpar os campos após adicionar o item ao pedido
       setProdutoSelecionado("");
       setQuantidadePedido("");
       setValorPedido("");
@@ -137,7 +145,6 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
       pedidoInfo += `Valor total: ${item.valorTotal}\n\n`;
     });
 
-    // Adicionar o valor total do pedido
     const valorTotalPedido = itensPedido.reduce(
       (total, item) => total + parseFloat(item.valorTotal),
       0
@@ -151,9 +158,18 @@ const ModalVeProdutos = ({ visible, onCancel }) => {
     <Modal
       title="Fazer pedido"
       open={visible}
-      onCancel={onCancel}
+      onCancel={() => {
+        limparInputs();
+        onCancel();
+      }}
       footer={[
-        <Button key="back" onClick={onCancel}>
+        <Button
+          key="back"
+          onClick={() => {
+            limparInputs();
+            onCancel();
+          }}
+        >
           Cancelar
         </Button>,
         <Button

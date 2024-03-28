@@ -8,6 +8,7 @@ export const TableHome = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchPedidos = async () => {
       try {
         const response = await axios.get("http://localhost:5000/pedidos");
@@ -25,7 +26,6 @@ export const TableHome = () => {
     fetchPedidos();
   }, []);
 
-  
   const columns = [
     {
       title: "Nome do Cliente",
@@ -45,23 +45,23 @@ export const TableHome = () => {
         <span>R$ {parseFloat(text).toFixed(2).replace(".", ",")}</span>
       ),
     },
-    {
-      title: "Itens do Pedido",
-      dataIndex: "produtos",
-      key: "produtos",
-      render: (itens, index) => (
-        <>
-          {itens &&
-            itens.map((item, itemIndex) => (
-              <ul key={`${item.quantidade}-${itemIndex}`}>
-                <li>
-                  {item.nome} - {item.quantidade} Unidades
-                </li>
-              </ul>
-            ))}
-        </>
-      ),
-    },
+    // {
+    //   title: "Itens do Pedido",
+    //   dataIndex: "produtos",
+    //   key: "produtos",
+    //   render: (itens, index) => (
+    //     <>
+    //       {itens &&
+    //         itens.map((item, itemIndex) => (
+    //           <ul key={`${item.quantidade}-${itemIndex}`}>
+    //             <li>
+    //               {item.nome} - {item.quantidade} Unidades
+    //             </li>
+    //           </ul>
+    //         ))}
+    //     </>
+    //   ),
+    // },
     {
       title: "Data do pedido",
       dataIndex: "dataPedido",
